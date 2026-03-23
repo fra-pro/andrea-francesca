@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrimonio di [Nome] e [Nome]</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Conferma la tua presenza</h1>
+        <p style="text-align: center;">Vi preghiamo di confermare entro il [Data]</p>
+        
+        <form id="rsvpForm">
+            <div class="form-group">
+                <label for="nome">Nome e Cognome</label>
+                <input type="text" id="nome" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="presenza">Sarai presente?</label>
+                <select id="presenza" required>
+                    <option value="">Seleziona...</option>
+                    <option value="si">Sì, parteciperò con gioia!</option>
+                    <option value="no">No, purtroppo non potrò esserci</option>
+                </select>
+            </div>
+
+            <div id="plusOneDiv" class="hidden">
+                <div class="form-group">
+                    <label for="plusOne">Nome e Cognome del tuo +1 (se assente lascia vuoto)</label>
+                    <input type="text" id="plusOne">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="note">Intolleranze alimentari o note</label>
+                <textarea id="note" rows="3"></textarea>
+            </div>
+
+            <button type="submit">Invia Conferma</button>
+        </form>
+        <div id="messaggio" style="text-align: center; margin-top: 15px; color: green; font-weight: bold;"></div>
+    </div>
+
+    <script type="module">
+        // Importa Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // INCOLLA QUI LA TUA CONFIGURAZIONE FIREBASE (Vedi istruzioni in fondo)
+        const firebaseConfig = {
+            apiKey: "INCOLLA_QUI",
+            authDomain: "INCOLLA_QUI",
+            projectId: "INCOLLA_QUI",
+            storageBucket: "INCOLLA_QUI",
+            messagingSenderId: "INCOLLA_QUI",
+            appId: "INCOLLA_QUI"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Mostra/Nascondi campo +1
+        document.getElementById('presenza').addEventListener('change', function() {
+            const plusOneDiv = document.getElementById('plusOneDiv');
+            if(this.value === 'si') {
+                plusOneDiv.classList.remove('hidden');
+            } else {
+                plusOneDiv.classList.add('hidden');
+                document.getElementById('plusOne').value = '';
+            }
+        });
+
+        // Invio del modulo
+        document.getElementById('rsvpForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.innerText = "Invio in corso...";
+            btn.disabled = true;
+
+            try {
+                await addDoc(collection(db, "invitati"), {
+                    nome: document.getElementById('nome').value,
+                    presenza: document.getElementById('presenza').value,
+                    plusOne: document.getElementById('plusOne').value,
+                    note: document.getElementById('note').value,
+                    timestamp: new Date()
+                });
+                document.getElementById('rsvpForm').reset();
+                document.getElementById('plusOneDiv').classList.add('hidden');
+                document.getElementById('messaggio').innerText = "Grazie! La tua conferma è stata registrata.";
+            } catch (error) {
+                console.error("Errore:", error);
+                alert("C'è stato un errore. Riprova più tardi.");
+            }
+            btn.innerText = "Invia Conferma";
+            btn.disabled = false;
+        });
+    </script>
+</body>
+</html>
