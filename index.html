@@ -2,102 +2,308 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matrimonio di Andrea e Francesca</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Un pensiero per te 🎁</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #2d3436;
+            overflow-x: hidden;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 24px;
+            padding: 28px 22px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            position: relative;
+            animation: popIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .top-emoji {
+            font-size: 58px;
+            margin-bottom: 10px;
+            display: inline-block;
+            animation: wiggle 2.5s infinite;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-8deg); }
+            75% { transform: rotate(8deg); }
+        }
+
+        h1 {
+            font-size: 22px;
+            color: #d63031;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .main-text {
+            font-size: 15px;
+            color: #555;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        /* Box delle provocazioni */
+        .roast-box {
+            min-height: 62px;
+            background: #fff3cd;
+            border: 1.5px dashed #f39c12;
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 22px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #b7791f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s ease;
+        }
+
+        .roast-box.empty {
+            background: transparent;
+            border-color: transparent;
+            color: transparent;
+        }
+
+        .buttons-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            min-height: 140px;
+        }
+
+        .btn-yes {
+            background: linear-gradient(45deg, #00b894, #00cec9);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(0, 184, 148, 0.35);
+            transition: all 0.25s ease;
+            z-index: 10;
+        }
+
+        .btn-no {
+            background: linear-gradient(45deg, #ff7675, #d63031);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(214, 48, 49, 0.3);
+            transition: all 0.25s ease;
+        }
+
+        .subtle-hint {
+            margin-top: 20px;
+            font-size: 11px;
+            color: #aaa;
+            letter-spacing: 0.5px;
+        }
+
+        /* Schermata Finale */
+        .gift-frame {
+            margin: 16px 0;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 3px solid #fdcb6e;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            background: #fff;
+        }
+
+        .gift-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .riddle-badge {
+            background: #d63031;
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-top: 14px;
+            box-shadow: 0 5px 15px rgba(214, 48, 49, 0.25);
+        }
+
+        .delivery-note {
+            margin-top: 14px;
+            font-size: 13px;
+            color: #636e72;
+            background: #f1f2f6;
+            padding: 10px 14px;
+            border-radius: 12px;
+            line-height: 1.4;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Conferma la tua presenza</h1>
-        <p style="text-align: center;">Vi preghiamo di confermare entro il [Data]</p>
-        
-        <form id="rsvpForm">
-            <div class="form-group">
-                <label for="nome">Nome e Cognome</label>
-                <input type="text" id="nome" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="presenza">Sarai presente?</label>
-                <select id="presenza" required>
-                    <option value="">Seleziona...</option>
-                    <option value="si">Sì, parteciperò con gioia!</option>
-                    <option value="no">No, purtroppo non potrò esserci</option>
-                </select>
+
+    <div class="card">
+        <!-- STEP 1: Il gioco provocatorio -->
+        <div id="step1" class="step active">
+            <div class="top-emoji" id="moodEmoji">🎁🤨</div>
+            <h1>Forse abbiamo un regalo per te...</h1>
+            <p class="main-text">Vorresti aprirlo o ti basta già la nostra splendida compagnia?</p>
+
+            <div id="roastBox" class="roast-box empty">
+                ...
             </div>
 
-            <div id="plusOneDiv" class="hidden">
-                <div class="form-group">
-                    <label for="plusOne">Nome e Cognome del tuo +1 (se assente lascia vuoto)</label>
-                    <input type="text" id="plusOne">
-                </div>
+            <div class="buttons-area">
+                <button id="btnYes" class="btn-yes" onclick="handleYes()">SÌ, APRIAMOLO! 🤩</button>
+                <button id="btnNo" class="btn-no" onclick="handleNo()">NO, mi bastate voi ❤️</button>
             </div>
 
-            <div class="form-group">
-                <label for="note">Intolleranze alimentari o note</label>
-                <textarea id="note" rows="3"></textarea>
+            <!-- Micro Easter Egg discreto in fondo -->
+            <div class="subtle-hint" id="footerHint">Caricamento sorpresa in corso... ⏳</div>
+        </div>
+
+        <!-- STEP 2: Rivelazione con immagine -->
+        <div id="step2" class="step">
+            <div class="top-emoji">🏆🧶</div>
+            <h1>Ok, hai vinto tu per sfinimento!</h1>
+            <p class="main-text" style="margin-bottom: 10px;">Agli altri regali ci pensiamo <i>a piedi</i> o <i>al galoppo</i>, ma per questo serve un po' di pazienza:</p>
+
+            <div class="riddle-badge">
+                🔍 "Il regalo è qualcosa dentro la foto"
             </div>
 
-            <button type="submit">Invia Conferma</button>
-        </form>
-        <div id="messaggio" style="text-align: center; margin-top: 15px; color: green; font-weight: bold;"></div>
+            <div class="gift-frame">
+                <img src="image_fra.png" alt="Il tuo regalo misterioso">
+            </div>
+
+            <div class="delivery-note">
+                🚚 <b>Nota della spedizione:</b> Il corriere ha avuto un imprevisto (forse doveva allacciarsi le scarpe o dare biada al cavallo), quindi arriverà con qualche giorno di ritardo!
+            </div>
+        </div>
     </div>
 
-    <script type="module">
-        // Importa Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    <script>
+        let yesClicks = 0;
 
-        // INCOLLA QUI LA TUA CONFIGURAZIONE FIREBASE (Vedi istruzioni in fondo)
-        const firebaseConfig = {
-            apiKey: "AIzaSyByK9OXNuV4KMIofL-wr6PKpG15cRrzObo",
-            authDomain: "andreafrancesca-e3179.firebaseapp.com",
-            projectId: "andreafrancesca-e3179",
-            storageBucket: "andreafrancesca-e3179.firebasestorage.app",
-            messagingSenderId: "570260072698",
-            appId: "1:570260072698:web:4d06bf3f478b4a1d3cc143",
-            measurementId: "G-SLCXL9DCJV"
-        };
+        // Frasi ironiche con Easter Egg sugli altri due regali (scarpe + escursione a cavallo)
+        const roasts = [
+            "Ammazza quanto sei materialista, non ti bastiamo noi...?! 🙄",
+            "Ancoraaa?! Ma non hai un briciolo di dignità? 😂",
+            "Guarda che questo regalo non ha né i lacci né gli zoccoli, eh! 👟🐎",
+            "Insisti?! Vai avanti a cliccare così tanto che ti si consumano le suole! 👣",
+            "Oh, ma non ti ferma nessuno! Neanche un cavallo al galoppo corre così verso i regali! 🏇💨",
+            "Ultimo avviso: il tasto SÌ è ormai microscopico, sei proprio senza vergogna... ok, cliccalo!"
+        ];
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const emojis = ["😒", "😱", "🕵️‍♀️", "👟", "🐎", "🤯"];
+        const hints = [
+            "Livello venalità: 45% 📈",
+            "Livello venalità: 78% 📈",
+            "Indizio #1: tieniti pronta a camminare... 👟",
+            "Indizio #2: ...o a stare ben salda in sella! 🐎",
+            "Livello venalità: FUORI SCALA 🚨",
+            "Mira bene il ditino! 🎯"
+        ];
 
-        // Mostra/Nascondi campo +1
-        document.getElementById('presenza').addEventListener('change', function() {
-            const plusOneDiv = document.getElementById('plusOneDiv');
-            if(this.value === 'si') {
-                plusOneDiv.classList.remove('hidden');
+        function handleYes() {
+            yesClicks++;
+            const btnYes = document.getElementById('btnYes');
+            const btnNo = document.getElementById('btnNo');
+            const roastBox = document.getElementById('roastBox');
+            const moodEmoji = document.getElementById('moodEmoji');
+            const footerHint = document.getElementById('footerHint');
+
+            if (yesClicks <= roasts.length) {
+                // Mostra la frase ironica
+                roastBox.classList.remove('empty');
+                roastBox.innerText = roasts[yesClicks - 1];
+                moodEmoji.innerText = emojis[yesClicks - 1];
+                footerHint.innerText = hints[yesClicks - 1];
+
+                // Rimpicciolisce il SÌ
+                const newYesScale = Math.max(0.38, 1 - (yesClicks * 0.11));
+                btnYes.style.transform = `scale(${newYesScale})`;
+                if (yesClicks >= 4) {
+                    btnYes.innerText = "Sì... 🥺";
+                }
+                if (yesClicks === roasts.length) {
+                    btnYes.innerText = "SÌ!";
+                }
+
+                // Ingrandisce il NO
+                const newNoFontSize = 17 + (yesClicks * 4);
+                const newNoPadY = 14 + (yesClicks * 4);
+                const newNoPadX = 32 + (yesClicks * 8);
+                btnNo.style.fontSize = `${newNoFontSize}px`;
+                btnNo.style.padding = `${newNoPadY}px ${newNoPadX}px`;
+                btnNo.innerText = "NO, sono una brava persona 😇";
+
             } else {
-                plusOneDiv.classList.add('hidden');
-                document.getElementById('plusOne').value = '';
-            }
-        });
+                // Arrivata alla fine: mostra la foto!
+                document.getElementById('step1').classList.remove('active');
+                document.getElementById('step2').classList.add('active');
+                window.scrollTo(0, 0);
 
-        // Invio del modulo
-        document.getElementById('rsvpForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button');
-            btn.innerText = "Invio in corso...";
-            btn.disabled = true;
-
-            try {
-                await addDoc(collection(db, "invitati"), {
-                    nome: document.getElementById('nome').value,
-                    presenza: document.getElementById('presenza').value,
-                    plusOne: document.getElementById('plusOne').value,
-                    note: document.getElementById('note').value,
-                    timestamp: new Date()
+                confetti({
+                    particleCount: 130,
+                    spread: 85,
+                    origin: { y: 0.6 }
                 });
-                document.getElementById('rsvpForm').reset();
-                document.getElementById('plusOneDiv').classList.add('hidden');
-                document.getElementById('messaggio').innerText = "Grazie! La tua conferma è stata registrata.";
-            } catch (error) {
-                console.error("Errore:", error);
-                alert("C'è stato un errore. Riprova più tardi.");
             }
-            btn.innerText = "Invia Conferma";
-            btn.disabled = false;
-        });
+        }
+
+        function handleNo() {
+            const roastBox = document.getElementById('roastBox');
+            const moodEmoji = document.getElementById('moodEmoji');
+            const btnNo = document.getElementById('btnNo');
+
+            roastBox.classList.remove('empty');
+            moodEmoji.innerText = "🤥";
+            roastBox.innerText = "Sì certo, come se ci credessimo! Non fare la finta santa, sappiamo che ti prude il dito per cliccare sul SÌ! 😂";
+            btnNo.innerText = "Bugiarda! Clicca SÌ 👆";
+        }
     </script>
 </body>
 </html>
